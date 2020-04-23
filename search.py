@@ -149,7 +149,7 @@ def uniformCostSearch(problem):
 
             for child_state, child_action, child_cost in problem.getSuccessors(state):
                 childNode = (child_state, actions + [child_action], cost + child_cost)
-                fringe.push(childNode, child_cost)
+                fringe.push(childNode, cost + child_cost)
     return []
 
 def nullHeuristic(state, problem=None):
