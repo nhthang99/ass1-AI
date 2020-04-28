@@ -18,6 +18,7 @@ Pacman agents (in searchAgents.py).
 """
 
 import util
+import heapq
 
 class SearchProblem:
     """
@@ -81,6 +82,26 @@ class Node:
     def __str__(self):
         return "Node(state={}, path={}, cost={})".format(self.state, self.path, self.cost)
 
+class CustomPriorityQueue(util.PriorityQueue):
+    def __init__(self):
+        super().__init__()
+    
+    def update(self, item, priority):
+        # If item already in priority queue with higher priority, update its priority and rebuild the heap.
+        # If item already in priority queue with equal or lower priority, do nothing.
+        # If item not in priority queue, do the same thing as self.push.
+        assert(isinstance(item, Node))
+        for index, (p, c, i) in enumerate(self.heap):
+            if i.state == item.state:
+                if p <= priority:
+                    break
+                del self.heap[index]
+                self.heap.append((priority, c, item))
+                heapq.heapify(self.heap)
+                break
+        else:
+            self.push(item, priority)
+
 class GraphSearch:
     def __init__(self, problem, fringe, heuristic=None):
         self.problem = problem
@@ -143,7 +164,8 @@ def breadthFirstSearch(problem):
 def uniformCostSearch(problem):
     """Search the node of least total cost first."""
     "*** YOUR CODE HERE ***"
-    fringe = util.PriorityQueue()
+    # fringe = util.PriorityQueue()
+    fringe = CustomPriorityQueue()
     return GraphSearch(problem, fringe).getActions()
 
 def nullHeuristic(state, problem=None):
@@ -156,7 +178,8 @@ def nullHeuristic(state, problem=None):
 def aStarSearch(problem, heuristic=nullHeuristic):
     """Search the node that has the lowest combined cost and heuristic first."""
     "*** YOUR CODE HERE ***"
-    fringe = util.PriorityQueue()
+    # fringe = util.PriorityQueue()
+    fringe = CustomPriorityQueue()
     return GraphSearch(problem, fringe, heuristic).getActions()
 
 # Abbreviations
