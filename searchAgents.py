@@ -342,7 +342,7 @@ class CornersProblem(search.SearchProblem):
                 if nextPosition in corners_unvisited:
                     corners_unvisited.remove(nextPosition)
                 cost = self.costFn(nextPosition)
-                successor = ((nextPosition, corners_unvisited), action, cost)
+                successor = ((nextPosition, list(corners_unvisited)), action, cost)
                 successors.append(successor)
 
         self._expanded += 1 # DO NOT CHANGE
@@ -386,10 +386,12 @@ def cornersHeuristic(state, problem):
 
     corners = problem.corners # These are the corner coordinates
     walls = problem.walls # These are the walls of the maze, as a Grid (game.py)
-
     "*** YOUR CODE HERE ***"
-    # return min([euclidean_distance(state[0], corner) for corner in corners]) # version 1
-    return min([manhattan_distance(state[0], corner) for corner in corners]) # version 2
+    try:
+        # return min([euclidean_distance(state[0], corner) for corner in state[1]]) # version 1
+        return min([manhattan_distance(state[0], corner) for corner in state[1]]) # version 2
+    except ValueError:
+        return 0
 
 class AStarCornersAgent(SearchAgent):
     "A SearchAgent for FoodSearchProblem using A* and your foodHeuristic"
