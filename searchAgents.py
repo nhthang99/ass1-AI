@@ -388,8 +388,8 @@ def cornersHeuristic(state, problem):
     walls = problem.walls # These are the walls of the maze, as a Grid (game.py)
     "*** YOUR CODE HERE ***"
     try:
-        # return min([euclidean_distance(state[0], corner) for corner in state[1]]) # version 1
-        return min([manhattan_distance(state[0], corner) for corner in state[1]]) # version 2
+        # return max([euclidean_distance(state[0], corner) for corner in state[1]]) # version 1
+        return max([manhattan_distance(state[0], corner) for corner in state[1]]) # version 2
     except ValueError:
         return 0
 
