@@ -63,16 +63,6 @@ class SearchProblem:
         util.raiseNotDefined()
 
 
-def tinyMazeSearch(problem):
-    """
-    Returns a sequence of moves that solves tinyMaze.  For any other maze, the
-    sequence of moves will be incorrect, so only use this for tinyMaze.
-    """
-    from game import Directions
-    s = Directions.SOUTH
-    w = Directions.WEST
-    return  [s, s, w, s, w, w, s, w]
-
 class Node:
     def __init__(self, state, path, cost):
         self.state = state
@@ -90,8 +80,8 @@ class CustomPriorityQueue(util.PriorityQueue):
         # If item already in priority queue with higher priority, update its priority and rebuild the heap.
         # If item already in priority queue with equal or lower priority, do nothing.
         # If item not in priority queue, do the same thing as self.push.
-        assert(isinstance(item, Node))
         for index, (p, c, i) in enumerate(self.heap):
+            assert(type(item) == type(i) == Node)
             if i.state == item.state:
                 if p <= priority:
                     break
@@ -135,9 +125,9 @@ class GraphSearch:
                 self.__expand(node)
                 
 
-    def __expand(self, node):
-        suceessors = self.problem.getSuccessors(node.state)
-        for child_state, child_path, child_cost in suceessors:
+    def __expand(self, node):      
+        successors = self.problem.getSuccessors(node.state)
+        for child_state, child_path, child_cost in successors:
             childNode = Node(child_state, node.path + [child_path], node.cost + child_cost)
             # Depth First Search And Breath First Search
             if not isinstance(self.fringe, util.PriorityQueue):
@@ -147,8 +137,18 @@ class GraphSearch:
                 self.fringe.update(childNode, node.cost + child_cost)
             # A* Search
             else:
-                self.fringe.update(childNode, node.cost + child_cost + self.heuristic(childNode.state, self.problem))
+                self.fringe.update(childNode, node.cost + child_cost \
+                                    + self.heuristic(childNode.state, self.problem))
 
+def tinyMazeSearch(problem):
+    """
+    Returns a sequence of moves that solves tinyMaze.  For any other maze, the
+    sequence of moves will be incorrect, so only use this for tinyMaze.
+    """
+    from game import Directions
+    s = Directions.SOUTH
+    w = Directions.WEST
+    return  [s, s, w, s, w, w, s, w]
 
 def depthFirstSearch(problem):
     "*** YOUR CODE HERE ***"
