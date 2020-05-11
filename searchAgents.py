@@ -40,7 +40,6 @@ from game import Actions
 import util
 import time
 import search
-import math
 
 class GoWestAgent(Agent):
     "An agent that goes West until it can't."
@@ -375,21 +374,18 @@ def cornersHeuristic(state, problem):
     shortest path from the state to a goal of the problem; i.e.  it should be
     admissible (as well as consistent).
     """
-
+    import math
+    
     def euclidean_distance(xy1, xy2):
         "Returns the Euclidean distance between points xy1 and xy2"
         return math.sqrt((xy1[0] - xy2[0])**2 + (xy1[1] - xy2[1])**2)
-
-    def manhattan_distance(xy1, xy2):
-        "Returns the Manhattan distance between points xy1 and xy2"
-        return abs( xy1[0] - xy2[0] ) + abs( xy1[1] - xy2[1] )
 
     corners = problem.corners # These are the corner coordinates
     walls = problem.walls # These are the walls of the maze, as a Grid (game.py)
     "*** YOUR CODE HERE ***"
     try:
         # return max([euclidean_distance(state[0], corner) for corner in state[1]]) # version 1
-        return max([manhattan_distance(state[0], corner) for corner in state[1]]) # version 2
+        return max([util.manhattanDistance(state[0], corner) for corner in state[1]]) # version 2
     except ValueError:
         return 0
 
@@ -483,9 +479,24 @@ def foodHeuristic(state, problem):
     Subsequent calls to this heuristic can access
     problem.heuristicInfo['wallCount']
     """
+
     position, foodGrid = state
-    "*** YOUR CODE HERE ***"
-    return 0
+    gameState = problem.startingGameState
+    # "*** YOUR CODE HERE ***"
+    # try:
+        # return max([util.manhattanDistance(position, food) for food in foodGrid.asList()]) # version 1
+        # return max([mazeDistance(position, food, gameState) for food in foodGrid.asList()]) # version 2
+    # except ValueError:
+    #     return 0
+
+    # version 3
+    foodList = foodGrid.asList() + [position]
+    maxDistance = 0
+    for pos in foodList:
+        distance = max([util.manhattanDistance(pos, food) for food in foodList])
+        if maxDistance < distance:
+            maxDistance = distance
+    return maxDistance
 
 class ClosestDotSearchAgent(SearchAgent):
     "Search for all food using a sequence of searches"
